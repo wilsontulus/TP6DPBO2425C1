@@ -8,24 +8,25 @@ import java.awt.event.KeyListener;
 
 public class App {
     protected static void main(String[] args) {
-        GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice device = graphics.getDefaultScreenDevice();
+
+        int resX = 360, resY = 640;
 
         JFrame frame = new JFrame();
         Logic logic = new Logic();
-        View display = new View(logic);
+        MainMenu mainMenu = new MainMenu(logic);
+        View display = new View(logic, mainMenu);
 
         // Set window title
         frame.setTitle("Flappy Bird Remake");
 
         // Set window size
-        frame.setSize(360, 640);
+        frame.setSize(resX, resY);
 
         // Put the window at the center of the screen
         frame.setLocationRelativeTo(null);
 
         // Tidak dapat di-resize
-        //frame.setResizable(false);
+        frame.setResizable(false);
 
         // Ubah default agar program ikut berhenti saat window diclose
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,6 +38,8 @@ public class App {
         frame.add(display);
         frame.pack();
 
+        // Tambahkan main menu ke frame
+        display.add(mainMenu);
 
         // Tampilkan window
         frame.setVisible(true);

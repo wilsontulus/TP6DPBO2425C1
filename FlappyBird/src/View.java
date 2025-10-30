@@ -6,13 +6,16 @@ public class View extends JPanel {
     int width = 360;
     int height = 640;
 
+    private MainMenu mainMenu;
     private Logic logic;
 
     Image backgroundImage;
     Image bird;
 
-    public View(Logic logic) {
+    public View(Logic logic, MainMenu mainMenu) {
         this.logic = logic;
+        this.mainMenu = mainMenu;
+
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.CYAN);
 
@@ -21,6 +24,10 @@ public class View extends JPanel {
 
         backgroundImage = new ImageIcon(getClass().getResource("assets/flappyremake/textures/background.png")).getImage();
         bird = new ImageIcon(getClass().getResource("assets/flappyremake/textures/bird.png")).getImage();
+    }
+
+    public MainMenu getMainMenu() {
+        return this.mainMenu;
     }
 
     @Override

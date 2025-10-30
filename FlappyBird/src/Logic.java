@@ -6,10 +6,10 @@ import java.util.ArrayList;
 public class Logic implements ActionListener, KeyListener {
     int frameWidth = 360, frameHeight = 640;
 
-    int playerStartPosX = frameWidth / 2;
-    int playerStartPosY = frameHeight / 2;
-
     int playerWidth = 34, playerHeight = 24;
+
+    int playerStartPosX = (frameWidth / 4) - (playerWidth / 2);
+    int playerStartPosY = (frameHeight / 2) - (playerHeight / 2);
 
     // Atribut posisi dan ukuran pipa
     int pipeStartPosX = frameWidth;
@@ -48,14 +48,27 @@ public class Logic implements ActionListener, KeyListener {
                 placePipes();
             }
         });
+        gameLoop = new Timer(1000 / 60, this);
+    }
+
+    public void startLogic() {
+        dead = false;
         if (!pipesCooldown.isRunning()) {
+            pipes.clear();
             pipesCooldown.start();
         }
 
-        gameLoop = new Timer(1000 / 60, this);
         if (!gameLoop.isRunning()) {
+            player.setVelocityY(0);
+            player.setPosY(playerStartPosY);
             gameLoop.start();
         }
+    }
+
+    public void stopLogic() {
+        pipesCooldown.stop();
+        gameLoop.stop();
+        dead = true;
     }
 
     public ArrayList<Pipe> getPipes() {
@@ -83,21 +96,43 @@ public class Logic implements ActionListener, KeyListener {
         return player;
     }
 
+    public boolean checkCollision() {
+        // Cek collision dengan langit dan tanah
+        if (player.getPosY() <= 0 || player.getPosY() >= (frameHeight - playerHeight)) {
+            return true;
+        }
+
+        // Cek collision dengan pipa
+        Rectangle playerRect = new Rectangle(player.getPosX(), player.getPosY(), player.getWidth(), player.getHeight());
+        for (int i = 0; i < pipes.size(); i++) {
+            Pipe pipe = pipes.get(i);
+            Rectangle pipeRect = new Rectangle(pipe.getPosX(), pipe.getPosY(), pipe.getWidth(), pipe.getHeight());
+
+            if (playerRect.intersects(pipeRect)) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
     public void move() {
         player.setVelocityY(player.getVelocityY() + gravity);
         player.setPosY(player.getPosY() + player.getVelocityY());
         player.setPosY(Math.max(player.getPosY(), 0));
         player.setPosY(Math.min(player.getPosY(), frameHeight-playerHeight));
 
-        if (player.getPosY() <= 0 || player.getPosY() >= (frameHeight - playerHeight)) {
-            gameLoop.stop();
-            pipesCooldown.stop();
-            dead = true;
+        if (checkCollision()) {
+            stopLogic();
         } else {
-
             for (int i = 0; i < pipes.size(); i++) {
                 Pipe pipe = pipes.get(i);
-                pipe.setPosX(pipe.getPosX() + pipeVelocityX);
+                // Periksa apakah posisi pipa masih terlihat di layar
+                if (pipe.getPosX() > -pipe.getWidth()) {
+                    pipe.setPosX(pipe.getPosX() + pipeVelocityX);
+                } else { // Delete jika posisi pipa sudah offscreen
+                    pipes.remove(pipe);
+                }
             }
         }
 
@@ -111,26 +146,21 @@ public class Logic implements ActionListener, KeyListener {
         }
 
         int currentPosY = player.getPosY();
-        IO.println("PosY:" + currentPosY);
+        //System.out.println("PosY:" + currentPosY);
     }
 
     public void keyTyped(KeyEvent e) {
 
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
-        IO.println("keyPressed: " + e.getKeyChar());
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            if (dead) {
-                dead = false;
-                player.setVelocityY(0);
-                player.setPosY(playerStartPosY);
-                pipes.clear();
-                gameLoop.start();
-                pipesCooldown.start();
-            }else{
-                player.setVelocityY(-10);
-            }
+        //System.out.println("keyPressed: " + e.getKeyChar());
+
+        if (e.getKeyCode() == KeyEvent.VK_SPACE && !dead) {
+            player.setVelocityY(-10);
+        } else if (e.getKeyCode() == KeyEvent.VK_R && dead) {
+            startLogic();
         }
     }
 
