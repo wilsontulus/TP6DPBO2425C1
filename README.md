@@ -23,6 +23,12 @@ Program ini merupakan program berbasis Swing dengan sebuah JFrame, yang memiliki
 
 Program ini merupakan program re-implementasi dari video game mobile legendaris bernama Flappy Bird menggunakan Java Swing GUI.
 
+Saat program dijalankan, pengguna akan melihat tampilan Main Menu dengan judul game serta tombol untuk memainkan permainan, maupun keluar dari program. 
+
+Jika pengguna mengklik Play (memainkan permainan), pengguna harus menjaga agar karakter tidak menabrak pipa yang akan bermunculan terus-menerus, dengan menekan tombol spasi dan menjaga pergerakan karakter.
+
+Setiap melewati pipa akan menambahkan Skor sebanyak 1 poin. Jika menabrak pipa, maka akan muncul Game Over, pergerakan berhenti hingga restart dengan menekan tombol R di keyboard.
+
 ## Legalitas
 
 Program ini merupakan kreasi fan-made untuk tujuan edukasi dan tidak terafiliasi dengan pihak pembuat asli Flappy Bird, yaitu Dong Nguyen dan .GEARS Studio.
