@@ -10,15 +10,16 @@ Aamiin.
 
 ## Desain program
 
-Diagram UML:
+Program ini merupakan program berbasis Swing dengan sebuah JFrame, yang memiliki kelas sebagai berikut:
+- App, yang merupakan induk utama dari aplikasi dan memiliki JFrame induk yang juga terkait dengan berbagai JPanel seperti View dan MainMenu
+- View, yang merupakan viewport class berbasis JPanel untuk menampilkan UI dan grafik permainan
+- MainMenu, yang merupakan class JPanel didalam View untuk menampilkan menu utama sebelum memulai permainan
+- Logic, yang merupakan class yang mengimplementasikan ActionListener dan KeyListener untuk alur jalan logika, seperti pergerakan karakter, managemen pipa yang muncul, dsb.
+- Player, yang merupakan class entitas yang memiliki atribut pemain, seperti posisi, ukuran, gambar, velocity (akselerasi), dsb.
+- Pipe, yang merupakan class entitas yang memiliki atribut sebagai penghalang dalam permainan.
+- Audio, yang merupakan class untuk menyederhanakan managemen Sound Effect dalam Java Swing.
 
-![UML Diagram](Dokumentasi/uml_diagram.svg)
-
-Desain Swing GUI:
-
-![Desain Swing GUI](Dokumentasi/gui_design.png)
-
-## Penjelasan Alur jalan program
+## Alur jalan program
 
 Program ini merupakan program re-implementasi dari video game mobile legendaris bernama Flappy Bird menggunakan Java Swing GUI.
 
