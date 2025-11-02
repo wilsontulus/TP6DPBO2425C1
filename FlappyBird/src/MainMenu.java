@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.Thread;
 
 public class MainMenu extends JPanel {
     private Logic logic;
@@ -10,18 +11,100 @@ public class MainMenu extends JPanel {
 
     private Image backgroundImage;
     private Image bird;
-    public MainMenu(Logic logic) {
-        // Tentukan kelas logic
+
+    private Font gameFont;
+
+    private JLabel titleText;
+    private JButton startButton;
+
+    private Timer menuAnim;
+    private View display;
+
+    private int count = 60;
+    private int floatSpeed = 1;
+
+    public MainMenu(Logic logic, View display) {
+        // Declare logic and font
         this.logic = logic;
+        this.display = display;
+        this.gameFont = display.getGameFont();
 
-        // Tentukan ukuran panel main menu
+        // Resize and make Transparent main menu
+        setLayout(null);
         setPreferredSize(new Dimension(width, height));
-        //setBackground(Color.CYAN);
+        setBackground(new Color(0, 0, 0, 0));
 
-        // main menu is ignored for now
-        this.setVisible(false);
-        logic.startLogic();
+        // Declaration of title
+
+        this.titleText = new JLabel("Flappy Bird", SwingConstants.CENTER);
+        titleText.setBounds((width - 340) / 2, 180, 340, 48);
+        titleText.setFont(this.gameFont);
+        titleText.setLayout(null);
+
+        // Declaration of start button
+        this.startButton = new JButton("Play");
+        startButton.setLayout(null);
+
+        // Remove unnecessary parts
+        startButton.setBorderPainted(false);
+        startButton.setFocusPainted(false);
+        startButton.setContentAreaFilled(false);
+
+        // Set position
+        startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        startButton.setBounds((width - 250) / 2, 400, 250, 48);
+        startButton.setFont(this.gameFont.deriveFont(18f));
+
+        // Put the player position at the center of window
+        logic.getPlayer().setPosX((width / 2) - (logic.getPlayer().getWidth() / 2));
+
+        // Action listener for button click, which will disable the main menu and start the game
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                menuAnim.stop();
+                setVisible(false);
+                logic.startLogic();
+            }
+        });
+
+        // Implement main menu animations
+        this.menuAnim = new Timer(1000/60, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                count++;
+                if (count > 120) {
+                    floatSpeed = -floatSpeed;
+                    count = 0;
+                }
+
+                logic.getPlayer().setPosY(logic.getPlayer().getPosY() + floatSpeed);
+                if (display != null) {
+                    display.repaint();
+                }
+            }
+        });
+
+        add(titleText);
+        add(startButton);
+        menuAnim.start();
     }
 
-
+    public void fadeAnim(boolean isFadeOut) {
+        try {
+            if (isFadeOut) {
+                for (int i = 255; i > 0; i--) {
+                    setBackground(new Color(0, 0, 0, i));
+                    Thread.sleep(1000 / 255);
+                }
+            } else {
+                for (int i = 0; i < 255; i++) {
+                    setBackground(new Color(0, 0, 0, i));
+                    Thread.sleep(1000 / 255);
+                }
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -25,21 +25,30 @@ public class Logic implements ActionListener, KeyListener {
     Image lowerPipeImage, upperPipeImage;
     ArrayList<Pipe> pipes;
 
+    // Sound Effects
+    Audio scoreEarnedSound, flapSound, deathSound;
+
     Timer gameLoop;
     Timer pipesCooldown;
+
     int gravity = 1;
 
     int pipeVelocityX = -2;
 
-    boolean dead = false;
+    boolean isPlaying = false;
 
     // Constructor
     public Logic() {
         bird = new ImageIcon(getClass().getResource("assets/flappyremake/textures/bird.png")).getImage();
         player = new Player(playerStartPosX, playerStartPosY, playerWidth, playerHeight, bird);
 
+        this.scoreEarnedSound = new Audio("assets/flappyremake/sounds/point.wav");
+        this.flapSound = new Audio("assets/flappyremake/sounds/wing.wav");
+        this.deathSound = new Audio("assets/flappyremake/sounds/die.wav");
+
         lowerPipeImage = new ImageIcon(getClass().getResource("assets/flappyremake/textures/lowerPipe.png")).getImage();
         upperPipeImage = new ImageIcon(getClass().getResource("assets/flappyremake/textures/upperPipe.png")).getImage();
+
         pipes = new ArrayList<Pipe>();
 
         pipesCooldown = new Timer(1500, new ActionListener() {
@@ -52,15 +61,26 @@ public class Logic implements ActionListener, KeyListener {
     }
 
     public void startLogic() {
-        dead = false;
+        isPlaying = true;
         if (!pipesCooldown.isRunning()) {
+            // Clear existing pipes
             pipes.clear();
+
+            // Start the pipe spawner
             pipesCooldown.start();
         }
 
         if (!gameLoop.isRunning()) {
+            // Reset player's position
+            player.setScore(0);
             player.setVelocityY(0);
+            player.setPosX(playerStartPosX);
             player.setPosY(playerStartPosY);
+
+            // Enable score text
+            view.getScoreLabel().setVisible(true);
+
+            // Start the game
             gameLoop.start();
         }
     }
@@ -68,11 +88,16 @@ public class Logic implements ActionListener, KeyListener {
     public void stopLogic() {
         pipesCooldown.stop();
         gameLoop.stop();
-        dead = true;
+        isPlaying = false;
+        this.deathSound.play();
     }
 
     public ArrayList<Pipe> getPipes() {
         return pipes;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     public void placePipes() {
@@ -80,11 +105,11 @@ public class Logic implements ActionListener, KeyListener {
         int openingSpace = frameHeight / 4;
 
         Pipe upperPipe = new Pipe(pipeStartPosX, randomPosY, pipeWidth,
-                                pipeHeight, upperPipeImage);
+                                pipeHeight, upperPipeImage, -1); // For 2D, Y direction up is negative
         pipes.add(upperPipe);
 
         Pipe lowerPipe = new Pipe(pipeStartPosX, (randomPosY + openingSpace + pipeHeight), pipeWidth,
-                pipeHeight, lowerPipeImage);
+                pipeHeight, lowerPipeImage, 1); // For 2D, Y direction down is positive
         pipes.add(lowerPipe);
     }
 
@@ -92,17 +117,13 @@ public class Logic implements ActionListener, KeyListener {
         this.view = view;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
     public boolean checkCollision() {
-        // Cek collision dengan langit dan tanah
+        // Check player collision with upper and lower JFrame border
         if (player.getPosY() <= 0 || player.getPosY() >= (frameHeight - playerHeight)) {
             return true;
         }
 
-        // Cek collision dengan pipa
+        // Check player collision with pipes
         Rectangle playerRect = new Rectangle(player.getPosX(), player.getPosY(), player.getWidth(), player.getHeight());
         for (int i = 0; i < pipes.size(); i++) {
             Pipe pipe = pipes.get(i);
@@ -116,11 +137,28 @@ public class Logic implements ActionListener, KeyListener {
         return false;
     }
 
+    public void checkPassedPipe() {
+        // First pipe
+        if (!pipes.isEmpty()) {
+            Pipe firstPipe = pipes.getFirst();
+
+            if (!firstPipe.isPassed() && firstPipe.getDirection() == -1 && player.getPosX() > firstPipe.getPosX()) {
+                firstPipe.setPassed(true);
+                player.setScore(player.getScore() + 1);
+                scoreEarnedSound.play();
+                view.getScoreLabel().setText(Integer.toString(player.getScore()));
+                System.out.println("Player earned score! Score is now " + player.getScore());
+            }
+        }
+    }
+
     public void move() {
         player.setVelocityY(player.getVelocityY() + gravity);
         player.setPosY(player.getPosY() + player.getVelocityY());
         player.setPosY(Math.max(player.getPosY(), 0));
         player.setPosY(Math.min(player.getPosY(), frameHeight-playerHeight));
+
+        checkPassedPipe();
 
         if (checkCollision()) {
             stopLogic();
@@ -131,6 +169,7 @@ public class Logic implements ActionListener, KeyListener {
                 if (pipe.getPosX() > -pipe.getWidth()) {
                     pipe.setPosX(pipe.getPosX() + pipeVelocityX);
                 } else { // Delete jika posisi pipa sudah offscreen
+                    System.out.println("Pipe #" + i + " deletion");
                     pipes.remove(pipe);
                 }
             }
@@ -144,9 +183,6 @@ public class Logic implements ActionListener, KeyListener {
         if (view != null) {
             view.repaint();
         }
-
-        int currentPosY = player.getPosY();
-        //System.out.println("PosY:" + currentPosY);
     }
 
     public void keyTyped(KeyEvent e) {
@@ -157,9 +193,10 @@ public class Logic implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         //System.out.println("keyPressed: " + e.getKeyChar());
 
-        if (e.getKeyCode() == KeyEvent.VK_SPACE && !dead) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE && isPlaying) {
             player.setVelocityY(-10);
-        } else if (e.getKeyCode() == KeyEvent.VK_R && dead) {
+            flapSound.play();
+        } else if (e.getKeyCode() == KeyEvent.VK_R && !isPlaying) {
             startLogic();
         }
     }

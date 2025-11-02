@@ -6,6 +6,7 @@ public class Player {
     private int width, height;
     private Image image;
     private int velocityY;
+    private int score;
 
     public Player(int posX, int posY, int width, int height, Image image) {
         this.posX = posX;
@@ -15,6 +16,7 @@ public class Player {
         this.image = image;
 
         this.velocityY = -0;
+        this.score = 0;
     }
 
     public int getPosX() {
@@ -37,6 +39,10 @@ public class Player {
         return image;
     }
 
+    public int getScore() {
+        return score;
+    }
+
     public int getVelocityY() {
         return velocityY;
     }
@@ -57,4 +63,7 @@ public class Player {
         this.velocityY = velocityY;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
 }

@@ -9,12 +9,29 @@ import java.awt.event.KeyListener;
 public class App {
     protected static void main(String[] args) {
 
+        // Declare window resolutions
         int resX = 360, resY = 640;
 
+        // Enable OpenGL acceleration for Linux, *BSD, and MacOS, windows has Direct3D acceleration enabled by default
+        String osName = System.getProperty("os.name");
+        if (osName.contains("Linux") || osName.contains("Mac OS X") || osName.contains("BSD")) {
+            try {
+                // Env for OpenGL acceleration
+                System.setProperty("sun.java2d.opengl", "True");
+
+                // Apply system LookAndFeel if available
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException |
+                     ClassNotFoundException e) {
+                System.out.println("Your system does not support OpenGL and/or UILookAndFeel. CPU renderer may be used.");
+            }
+        }
+
+        // Set up constructed var objects
         JFrame frame = new JFrame();
         Logic logic = new Logic();
-        MainMenu mainMenu = new MainMenu(logic);
-        View display = new View(logic, mainMenu);
+        View display = new View(logic);
+        MainMenu mainMenu = new MainMenu(logic, display);
 
         // Set window title
         frame.setTitle("Flappy Bird Remake");
@@ -25,10 +42,10 @@ public class App {
         // Put the window at the center of the screen
         frame.setLocationRelativeTo(null);
 
-        // Tidak dapat di-resize
+        // Currently not resize-able
         frame.setResizable(false);
 
-        // Ubah default agar program ikut berhenti saat window diclose
+        // Change default close operation for close button to make it not run as background process
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Set logic to viewer
@@ -38,13 +55,13 @@ public class App {
         frame.add(display);
         frame.pack();
 
-        // Tambahkan main menu ke frame
+        // Add main menu to viewport frame
         display.add(mainMenu);
 
-        // Tampilkan window
+        // Show the window
         frame.setVisible(true);
 
-        // Deteksi penutupan window
+        // Detect window closing
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

@@ -12,9 +12,11 @@ public class View extends JPanel {
     Image backgroundImage;
     Image bird;
 
-    public View(Logic logic, MainMenu mainMenu) {
+    Font gameFont;
+    JLabel scoreLabel;
+
+    public View(Logic logic) {
         this.logic = logic;
-        this.mainMenu = mainMenu;
 
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.CYAN);
@@ -24,10 +26,30 @@ public class View extends JPanel {
 
         backgroundImage = new ImageIcon(getClass().getResource("assets/flappyremake/textures/background.png")).getImage();
         bird = new ImageIcon(getClass().getResource("assets/flappyremake/textures/bird.png")).getImage();
+
+        // Declare font used for the game
+        try {
+            this.gameFont = Font.createFont(Font.TRUETYPE_FONT,
+                    getClass().getResourceAsStream("assets/flappyremake/fonts/PressStart2P-Regular.ttf")).deriveFont(Font.PLAIN, 20f);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(this.gameFont);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        this.scoreLabel = new JLabel("0", SwingConstants.CENTER);
+        scoreLabel.setBounds((width - 340) / 2, 180, 340, 48);
+        scoreLabel.setFont(this.gameFont);
+        scoreLabel.setVisible(false);
+        this.add(scoreLabel);
     }
 
-    public MainMenu getMainMenu() {
-        return this.mainMenu;
+    public Font getGameFont() {
+        return this.gameFont;
+    }
+
+    public JLabel getScoreLabel() {
+        return this.scoreLabel;
     }
 
     @Override

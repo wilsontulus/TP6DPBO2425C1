@@ -4,17 +4,17 @@ public class Pipe {
     private int posX, posY;
     private int width, height;
     private Image image;
-    private int velocityX;
+    private int direction;
     boolean passed;
 
-    public Pipe(int posX, int posY, int width, int height, Image image) {
+    public Pipe(int posX, int posY, int width, int height, Image image, int direction) {
         this.posX = posX;
         this.posY = posY;
         this.width = width;
         this.height = height;
         this.image = image;
 
-        this.velocityX = 0;
+        this.direction = direction;
         this.passed = false;
     }
 
@@ -39,8 +39,8 @@ public class Pipe {
         return image;
     }
 
-    public int getVelocityX() {
-        return velocityX;
+    public int getDirection() {
+        return direction;
     }
 
     public boolean isPassed() {
@@ -69,8 +69,8 @@ public class Pipe {
         this.image = image;
     }
 
-    public void setVelocityX(int velocityX) {
-        this.velocityX = velocityX;
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 
     public void setPassed(boolean passed) {
