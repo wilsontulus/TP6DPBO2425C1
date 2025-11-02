@@ -28,6 +28,5 @@ Program ini merupakan kreasi fan-made untuk tujuan edukasi dan tidak terafiliasi
 
 ## Preview operasional program
 
-_Catatan: Java telah dikonfigurasi untuk menggunakan integrasi GTK yang menyesuaikan tema dari GUI yang ditampilkan._
+https://github.com/user-attachments/assets/92299b32-73e7-425a-afd2-b4299132c8e0
 
-![Preview Operasional Swing](Dokumentasi/preview.webp)
