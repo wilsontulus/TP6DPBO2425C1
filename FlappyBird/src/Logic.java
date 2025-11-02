@@ -79,6 +79,10 @@ public class Logic implements ActionListener, KeyListener {
 
             // Enable score text
             view.getScoreLabel().setVisible(true);
+            view.setScore("0");
+
+            // Disable game over test
+            view.setGameoverTexts(false);
 
             // Start the game
             gameLoop.start();
@@ -90,6 +94,7 @@ public class Logic implements ActionListener, KeyListener {
         gameLoop.stop();
         isPlaying = false;
         this.deathSound.play();
+        view.setGameoverTexts(true);
     }
 
     public ArrayList<Pipe> getPipes() {
@@ -138,15 +143,15 @@ public class Logic implements ActionListener, KeyListener {
     }
 
     public void checkPassedPipe() {
-        // First pipe
+        // First pipe (most-left)
         if (!pipes.isEmpty()) {
             Pipe firstPipe = pipes.getFirst();
 
-            if (!firstPipe.isPassed() && firstPipe.getDirection() == -1 && player.getPosX() > firstPipe.getPosX()) {
+            if (!firstPipe.isPassed() && firstPipe.getDirection() == -1 && player.getPosX() > firstPipe.getPosX()*2) {
                 firstPipe.setPassed(true);
                 player.setScore(player.getScore() + 1);
                 scoreEarnedSound.play();
-                view.getScoreLabel().setText(Integer.toString(player.getScore()));
+                view.setScore(Integer.toString(player.getScore()));
                 System.out.println("Player earned score! Score is now " + player.getScore());
             }
         }

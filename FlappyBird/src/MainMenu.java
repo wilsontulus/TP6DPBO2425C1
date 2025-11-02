@@ -15,12 +15,12 @@ public class MainMenu extends JPanel {
     private Font gameFont;
 
     private JLabel titleText;
-    private JButton startButton;
+    private JButton startButton, exitButton;
 
     private Timer menuAnim;
     private View display;
 
-    private int count = 60;
+    private int count = 40;
     private int floatSpeed = 1;
 
     public MainMenu(Logic logic, View display) {
@@ -37,7 +37,7 @@ public class MainMenu extends JPanel {
         // Declaration of title
 
         this.titleText = new JLabel("Flappy Bird", SwingConstants.CENTER);
-        titleText.setBounds((width - 340) / 2, 180, 340, 48);
+        titleText.setBounds((width - 340) / 2, 210, 340, 48);
         titleText.setFont(this.gameFont);
         titleText.setLayout(null);
 
@@ -47,13 +47,25 @@ public class MainMenu extends JPanel {
 
         // Remove unnecessary parts
         startButton.setBorderPainted(false);
-        startButton.setFocusPainted(false);
         startButton.setContentAreaFilled(false);
 
         // Set position
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        startButton.setBounds((width - 250) / 2, 400, 250, 48);
+        startButton.setBounds((width - 250) / 2, 368, 250, 48);
         startButton.setFont(this.gameFont.deriveFont(18f));
+
+        // Declaration of exit button
+        this.exitButton = new JButton("Exit");
+        exitButton.setLayout(null);
+
+        // Remove unnecessary parts
+        exitButton.setBorderPainted(false);
+        exitButton.setContentAreaFilled(false);
+
+        // Set position
+        exitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        exitButton.setBounds((width - 250) / 2, 416, 250, 48);
+        exitButton.setFont(this.gameFont.deriveFont(18f));
 
         // Put the player position at the center of window
         logic.getPlayer().setPosX((width / 2) - (logic.getPlayer().getWidth() / 2));
@@ -68,12 +80,20 @@ public class MainMenu extends JPanel {
             }
         });
 
+        // Action listener for quit button, which will exit the game
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                System.exit(0);
+            }
+        });
+
         // Implement main menu animations
         this.menuAnim = new Timer(1000/60, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 count++;
-                if (count > 120) {
+                if (count > 80) {
                     floatSpeed = -floatSpeed;
                     count = 0;
                 }
@@ -87,6 +107,7 @@ public class MainMenu extends JPanel {
 
         add(titleText);
         add(startButton);
+        add(exitButton);
         menuAnim.start();
     }
 

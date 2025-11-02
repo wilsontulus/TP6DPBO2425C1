@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class View extends JPanel {
     int width = 360;
@@ -13,10 +14,21 @@ public class View extends JPanel {
     Image bird;
 
     Font gameFont;
-    JLabel scoreLabel;
+    JLabel scoreLabel, gameOverLabel, pressRLabel;
+
+    public String getBackgroundName() {
+        Random random = new Random();
+        if (random.nextBoolean()) {
+            return "background.png";
+        } else {
+            return "background_dark.png";
+        }
+    }
 
     public View(Logic logic) {
         this.logic = logic;
+
+        String[] backgroundChoices = {"background.png", "background_dark.png"};
 
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.CYAN);
@@ -24,7 +36,7 @@ public class View extends JPanel {
         setFocusable(true);
         addKeyListener(logic);
 
-        backgroundImage = new ImageIcon(getClass().getResource("assets/flappyremake/textures/background.png")).getImage();
+        backgroundImage = new ImageIcon(getClass().getResource("assets/flappyremake/textures/" + getBackgroundName())).getImage();
         bird = new ImageIcon(getClass().getResource("assets/flappyremake/textures/bird.png")).getImage();
 
         // Declare font used for the game
@@ -38,10 +50,23 @@ public class View extends JPanel {
         }
 
         this.scoreLabel = new JLabel("0", SwingConstants.CENTER);
-        scoreLabel.setBounds((width - 340) / 2, 180, 340, 48);
+        scoreLabel.setBounds((width - 340) / 2, 600, 340, 48);
         scoreLabel.setFont(this.gameFont);
         scoreLabel.setVisible(false);
+
+        this.gameOverLabel = new JLabel("Game Over!", SwingConstants.CENTER);
+        gameOverLabel.setBounds((width - 340) / 2, 600, 340, 48);
+        gameOverLabel.setFont(this.gameFont);
+        gameOverLabel.setVisible(false);
+
+        this.pressRLabel = new JLabel("Press R to restart");
+        pressRLabel.setBounds((width - 340) / 2, 600, 340, 48);
+        pressRLabel.setFont(this.gameFont);
+        pressRLabel.setVisible(false);
+
         this.add(scoreLabel);
+        this.add(gameOverLabel);
+        this.add(pressRLabel);
     }
 
     public Font getGameFont() {
@@ -50,6 +75,15 @@ public class View extends JPanel {
 
     public JLabel getScoreLabel() {
         return this.scoreLabel;
+    }
+
+    public void setScore(String score) {
+        this.scoreLabel.setText(score);
+    }
+
+    public void setGameoverTexts(boolean state) {
+        this.gameOverLabel.setVisible(state);
+        this.pressRLabel.setVisible(state);
     }
 
     @Override
