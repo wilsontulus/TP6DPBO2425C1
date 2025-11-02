@@ -110,11 +110,11 @@ public class Logic implements ActionListener, KeyListener {
         int openingSpace = frameHeight / 4;
 
         Pipe upperPipe = new Pipe(pipeStartPosX, randomPosY, pipeWidth,
-                                pipeHeight, upperPipeImage, -1); // For 2D, Y direction up is negative
+                                pipeHeight, upperPipeImage, -1); // For 2D, Y direction upwards is negative
         pipes.add(upperPipe);
 
         Pipe lowerPipe = new Pipe(pipeStartPosX, (randomPosY + openingSpace + pipeHeight), pipeWidth,
-                pipeHeight, lowerPipeImage, 1); // For 2D, Y direction down is positive
+                pipeHeight, lowerPipeImage, 1); // For 2D, Y direction downwards is positive
         pipes.add(lowerPipe);
     }
 
@@ -130,8 +130,7 @@ public class Logic implements ActionListener, KeyListener {
 
         // Check player collision with pipes
         Rectangle playerRect = new Rectangle(player.getPosX(), player.getPosY(), player.getWidth(), player.getHeight());
-        for (int i = 0; i < pipes.size(); i++) {
-            Pipe pipe = pipes.get(i);
+        for (Pipe pipe : pipes) {
             Rectangle pipeRect = new Rectangle(pipe.getPosX(), pipe.getPosY(), pipe.getWidth(), pipe.getHeight());
 
             if (playerRect.intersects(pipeRect)) {
@@ -174,7 +173,6 @@ public class Logic implements ActionListener, KeyListener {
                 if (pipe.getPosX() > -pipe.getWidth()) {
                     pipe.setPosX(pipe.getPosX() + pipeVelocityX);
                 } else { // Delete jika posisi pipa sudah offscreen
-                    System.out.println("Pipe #" + i + " deletion");
                     pipes.remove(pipe);
                 }
             }
@@ -196,8 +194,6 @@ public class Logic implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        //System.out.println("keyPressed: " + e.getKeyChar());
-
         if (e.getKeyCode() == KeyEvent.VK_SPACE && isPlaying) {
             player.setVelocityY(-10);
             flapSound.play();

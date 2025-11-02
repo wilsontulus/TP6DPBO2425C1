@@ -31,6 +31,7 @@ public class MainMenu extends JPanel {
 
         // Resize and make Transparent main menu
         setLayout(null);
+        setBounds(1, 1, width, height);
         setPreferredSize(new Dimension(width, height));
         setBackground(new Color(0, 0, 0, 0));
 
@@ -40,10 +41,12 @@ public class MainMenu extends JPanel {
         titleText.setBounds((width - 340) / 2, 210, 340, 48);
         titleText.setFont(this.gameFont);
         titleText.setLayout(null);
+        titleText.setForeground(Color.WHITE);
 
         // Declaration of start button
         this.startButton = new JButton("Play");
         startButton.setLayout(null);
+        startButton.setForeground(Color.WHITE);
 
         // Remove unnecessary parts
         startButton.setBorderPainted(false);
@@ -51,12 +54,13 @@ public class MainMenu extends JPanel {
 
         // Set position
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        startButton.setBounds((width - 250) / 2, 368, 250, 48);
+        startButton.setBounds((width - 250) / 2, 378, 250, 48);
         startButton.setFont(this.gameFont.deriveFont(18f));
 
         // Declaration of exit button
         this.exitButton = new JButton("Exit");
         exitButton.setLayout(null);
+        exitButton.setForeground(Color.WHITE);
 
         // Remove unnecessary parts
         exitButton.setBorderPainted(false);
@@ -64,7 +68,7 @@ public class MainMenu extends JPanel {
 
         // Set position
         exitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        exitButton.setBounds((width - 250) / 2, 416, 250, 48);
+        exitButton.setBounds((width - 250) / 2, 426, 250, 48);
         exitButton.setFont(this.gameFont.deriveFont(18f));
 
         // Put the player position at the center of window

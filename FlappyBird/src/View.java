@@ -27,8 +27,7 @@ public class View extends JPanel {
 
     public View(Logic logic) {
         this.logic = logic;
-
-        String[] backgroundChoices = {"background.png", "background_dark.png"};
+        this.setLayout(null);
 
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.CYAN);
@@ -50,18 +49,24 @@ public class View extends JPanel {
         }
 
         this.scoreLabel = new JLabel("0", SwingConstants.CENTER);
-        scoreLabel.setBounds((width - 340) / 2, 600, 340, 48);
+        scoreLabel.setLayout(null);
+        scoreLabel.setBounds((width - 240) / 2, 64, 240, 48);
         scoreLabel.setFont(this.gameFont);
+        scoreLabel.setForeground(Color.WHITE);
         scoreLabel.setVisible(false);
 
         this.gameOverLabel = new JLabel("Game Over!", SwingConstants.CENTER);
-        gameOverLabel.setBounds((width - 340) / 2, 600, 340, 48);
-        gameOverLabel.setFont(this.gameFont);
+        gameOverLabel.setLayout(null);
+        gameOverLabel.setBounds((width - 320) / 2, 240, 320, 48);
+        gameOverLabel.setFont(this.gameFont.deriveFont(24f));
+        gameOverLabel.setForeground(Color.WHITE);
         gameOverLabel.setVisible(false);
 
-        this.pressRLabel = new JLabel("Press R to restart");
-        pressRLabel.setBounds((width - 340) / 2, 600, 340, 48);
-        pressRLabel.setFont(this.gameFont);
+        this.pressRLabel = new JLabel("(R) - Restart Game");
+        pressRLabel.setLayout(null);
+        pressRLabel.setBounds((width - 300) / 2, 380, 300, 40);
+        pressRLabel.setFont(this.gameFont.deriveFont(16f));
+        pressRLabel.setForeground(Color.WHITE);
         pressRLabel.setVisible(false);
 
         this.add(scoreLabel);
